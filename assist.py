@@ -1,6 +1,6 @@
-from curses import wrapper
-from string_stack import StringStack
+import curses
 import random
+from string_stack import StringStack
 
 INTRO_MESSAGE = """
         Hi, I'm your assistant !
@@ -97,13 +97,12 @@ class PopState:
 def get_input(stdscr):
     res = ""
     while True:
-        c = chr(stdscr.getch())
-        if c in [' ', '\n']:
+        char = chr(stdscr.getch())
+        if char in [' ', '\n']:
             # end of word
             return res
 
-        elif ord(c) == 263:
-            # backspace key
+        elif ord(char) == curses.KEY_BACKSPACE:
             if res != "":
                 y, x = stdscr.getyx()
                 stdscr.move(y, x-1)
@@ -112,8 +111,8 @@ def get_input(stdscr):
 
         else:
             # print the letter for the user
-            res = res + c
-            stdscr.addch(c)
+            res = res + char
+            stdscr.addch(char)
 
 
 def state_name(s):
@@ -148,4 +147,4 @@ def main(stdscr):
 
 
 if __name__ == "__main__":
-    wrapper(main)
+    curses.wrapper(main)
