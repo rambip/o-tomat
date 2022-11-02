@@ -14,11 +14,13 @@ INTRO_MESSAGE = """
 
 # Default state. Also the initial one
 class MenuState:
-    def __init__(self, message = "      Waiting for command"):
+    def __init__(self, message: str= "      Waiting for command"):
+        # has to be defined inside the constructor, because the reference to
+        # the class itself (MenuState) will be impossible else
         self.transitions = {
                 "help": HelpState, "?": HelpState,
                 "": MenuState,
-                "exit": lambda : None,
+                "exit": lambda: None,
                 "push": PushState,
                 "pop": PopState,
                 }
@@ -33,7 +35,7 @@ class MenuState:
             return self.transitions[msg]()
         return MenuState("      unknown command")
 
-    def render(self) -> str:
+    def __str__(self) -> str:
         return self.message
 
 
@@ -43,7 +45,7 @@ class HelpState:
             return HelpState()
         return MenuState()
 
-    def render(self):
+    def __str__(self) -> str:
         return f"""
         - help: display this message
         - exit: exit
@@ -64,7 +66,7 @@ class PushState:
         return self
 
 
-    def render(self):
+    def __str__(self) -> str:
         return """
         every word will be added to the stack
 
@@ -83,7 +85,7 @@ class PopState:
         return MenuState()
 
 
-    def render(self):
+    def __str__(self) -> str:
         return """
         every time you hit <Space>, I will remove a word from the stack
 
@@ -129,11 +131,11 @@ def main(stdscr):
         # display current state
         stdscr.clear()
         stdscr.addstr(f"[{state_name(state)}]\n")
-        stdscr.addstr(state.render())
+        stdscr.addstr(str(state))
         stdscr.addstr("\n\n")
 
         # display the stack
-        stdscr.addstr(stack.render())
+        stdscr.addstr(str(stack))
 
         stdscr.addstr("\n\n>  ")
         stdscr.refresh()

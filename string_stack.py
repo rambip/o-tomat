@@ -25,7 +25,7 @@ class StringStack(list):
         if word != "":
             self.append(word)
 
-    def render(self) -> str:
+    def __str__(self) -> str:
         """Render the stack as a string."""
         # return "[\t"+"\n\t".join(self) + "\n]"
         res =    " ┏\n ┃"
