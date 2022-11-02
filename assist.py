@@ -1,4 +1,5 @@
 from curses import wrapper
+from string_stack import StringStack
 import random
 
 INTRO_MESSAGE = """
@@ -118,36 +119,11 @@ def state_name(s):
     return type(s).__name__
 
 
-# A stringStack
-# The difference with a normal stack is that
-# a string stack is never empty.
-# it contains at list the empty string
-class stringStack(list):
-    def head(self):
-        l = len(self)
-        if l == 0:
-            return ""
-        return l[l-1]
-
-    def pop(self):
-        if len(self) != 0: list.pop(self)
-
-
-    def push(self, word):
-        if word != "":
-            self.append(word)
-
-    def render(self):
-        # return "[\t"+"\n\t".join(self) + "\n]"
-        res =    " ┏\n ┃"
-        res += "\n ┃".join(self)
-        res += "\n ┗"
-        return res
 
 
 def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
-    stack = stringStack()
+    stack = StringStack()
 
     while True:
         # display current state
