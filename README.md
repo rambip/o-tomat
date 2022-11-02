@@ -8,6 +8,8 @@ How Tomat can be helpful ?
 
 By stacking your commands of course !
 
+## Current look
+![image](https://user-images.githubusercontent.com/62420525/199613694-1492c937-82c6-4ed7-92ce-e1e54e167f09.png)
 
 ## Construction
 Tomat is based on the idea of a [push-down automaton](https://en.wikipedia.org/wiki/Pushdown_automaton)
