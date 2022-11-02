@@ -1,8 +1,11 @@
 # o-tomat
 
 Tomat is your assistant
+
 o-Tomat know his state
+
 How Tomat can be helpful ?
+
 By stacking your commands of course !
 
 
