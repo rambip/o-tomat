@@ -28,10 +28,7 @@ class StringStack(list):
     def __str__(self) -> str:
         """Render the stack as a string."""
         # return "[\t"+"\n\t".join(self) + "\n]"
-        res =    " ┏\n ┃"
+        res = " ┏\n ┃"
         res += "\n ┃".join(self)
         res += "\n ┗"
         return res
-
-
-

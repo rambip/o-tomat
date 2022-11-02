@@ -14,16 +14,16 @@ INTRO_MESSAGE = """
 
 # Default state. Also the initial one
 class MenuState:
-    def __init__(self, message: str= "      Waiting for command"):
+    def __init__(self, message: str = "      Waiting for command"):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
-                "help": HelpState, "?": HelpState,
-                "": MenuState,
-                "exit": lambda: None,
-                "push": PushState,
-                "pop": PopState,
-                }
+            "help": HelpState, "?": HelpState,
+            "": MenuState,
+            "exit": lambda: None,
+            "push": PushState,
+            "pop": PopState,
+        }
         self.message = message
 
     def update(self, msg: str, pile):
@@ -65,7 +65,6 @@ class PushState:
         pile.push(msg)
         return self
 
-
     def __str__(self) -> str:
         return """
         every word will be added to the stack
@@ -84,7 +83,6 @@ class PopState:
 
         return MenuState()
 
-
     def __str__(self) -> str:
         return """
         every time you hit <Space>, I will remove a word from the stack
@@ -94,19 +92,21 @@ class PopState:
 
 # Get a word from the user
 # TODO: use " to escape spaces ?
+
+
 def get_input(stdscr):
     res = ""
     while True:
         c = chr(stdscr.getch())
-        if c in  [' ', '\n']:
+        if c in [' ', '\n']:
             # end of word
             return res
 
         elif ord(c) == 263:
             # backspace key
             if res != "":
-                y,x = stdscr.getyx()
-                stdscr.move(y,x-1)
+                y, x = stdscr.getyx()
+                stdscr.move(y, x-1)
                 stdscr.delch()
                 res = res[0:-1]
 
@@ -119,8 +119,6 @@ def get_input(stdscr):
 def state_name(s):
     # debug information
     return type(s).__name__
-
-
 
 
 def main(stdscr):
@@ -151,4 +149,3 @@ def main(stdscr):
 
 if __name__ == "__main__":
     wrapper(main)
-
