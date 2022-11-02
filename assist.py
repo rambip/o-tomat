@@ -20,16 +20,19 @@ class MenuState:
                 "exit": lambda : None,
                 "push": PushState,
                 "pop": PopState,
-        }
-
+                }
         self.message = message
 
-    def update(self,msg, pile):
+    def update(self, msg: str, pile):
+        """
+        Args:
+            msg
+        """
         if msg in self.transitions:
             return self.transitions[msg]()
         return MenuState("      unknown command")
 
-    def render(self):
+    def render(self) -> str:
         return self.message
 
 
@@ -42,23 +45,23 @@ class HelpState:
     def render(self):
         return f"""
         - help: display this message
-        - exit: exit 
-        - push: {PushState.doc}
-        - pop: {PopState.doc}
+        - exit: exit
+        - push: {PushState.__doc__}
+        - pop: {PopState.__doc__}
 
         type any key to go home, then enter command
         """
 
 
 class PushState:
-    doc = "push string to the stack"
+    """Push string to the stack."""
 
     def update(self, msg, pile):
         if msg == "":
             return MenuState()
         pile.push(msg)
         return self
-        
+
 
     def render(self):
         return """
@@ -66,10 +69,10 @@ class PushState:
 
         type empty word to exit
         """
- 
+
 
 class PopState:
-    doc = "pop string from the stack"
+    """Pop string from the stack."""
 
     def update(self, msg, pile):
         if msg == "":
@@ -77,7 +80,7 @@ class PopState:
             return self
 
         return MenuState()
-        
+
 
     def render(self):
         return """
@@ -135,7 +138,11 @@ class stringStack(list):
             self.append(word)
 
     def render(self):
-        return "[\t"+"\n\t".join(self) + "\n]"
+        # return "[\t"+"\n\t".join(self) + "\n]"
+        res =    " ┏\n ┃"
+        res += "\n ┃".join(self)
+        res += "\n ┗"
+        return res
 
 
 def main(stdscr):
