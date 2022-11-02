@@ -16,6 +16,6 @@ Tomat is based on the idea of a [push-down automaton](https://en.wikipedia.org/w
 
 I built this thing to answer this very simple question:
 
-How can an extensible modular pile-based automata be usefull for human-to-machine communication, and what could be the effects of the instant feedback paradigm on the design of human-to-computer interfaces ?
+> How can an extensible modular pile-based automata be usefull for human-to-machine communication, and what could be the effects of the instant feedback paradigm on the design of human-to-computer interfaces ?
 
 
