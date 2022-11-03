@@ -11,9 +11,15 @@ INTRO_MESSAGE = """
         Type help for help
         """
 
+class State:
+    def update(self, msg: str, pile: StringStack):
+        if msg in self.transitions:
+            return self.transitions[msg]()
+        return self("      unknown command")
+
 
 # Default state. Also the initial one
-class MenuState:
+class MenuState(State):
     def __init__(self, message: str = "      Waiting for command"):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
@@ -26,11 +32,7 @@ class MenuState:
         }
         self.message = message
 
-    def update(self, msg: str, pile):
-        """
-        Args:
-            msg
-        """
+    def update(self, msg: str, pile: StringStack) -> State:
         if msg in self.transitions:
             return self.transitions[msg]()
         return MenuState("      unknown command")
@@ -39,8 +41,8 @@ class MenuState:
         return self.message
 
 
-class HelpState:
-    def update(self, msg, pile):
+class HelpState(State):
+    def update(self, msg: str, pile: StringStack) -> State:
         if msg == "help":
             return HelpState()
         return MenuState()
@@ -56,10 +58,10 @@ class HelpState:
         """
 
 
-class PushState:
+class PushState(State):
     """Push string to the stack."""
 
-    def update(self, msg, pile):
+    def update(self, msg: str, pile: StringStack) -> State:
         if msg == "":
             return MenuState()
         pile.push(msg)
@@ -73,10 +75,10 @@ class PushState:
         """
 
 
-class PopState:
+class PopState(State):
     """Pop string from the stack."""
 
-    def update(self, msg, pile):
+    def update(self, msg: str, pile: StringStack) -> State:
         if msg == "":
             pile.pop()
             return self
