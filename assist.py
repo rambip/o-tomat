@@ -18,6 +18,11 @@ class State:
             return self.transitions[msg]()
         return self("      unknown command")
 
+    def __repr__(self) -> str:
+        """Show the name of the state itself."""
+        return f"[{type(self).__name__}]"
+
+
 
 # Default state. Also the initial one
 class MenuState(State):
@@ -127,11 +132,6 @@ def get_input(stdscr, until_quote=False) -> str:
             stdscr.addch(char)
 
 
-def state_name(s):
-    # debug information
-    return type(s).__name__
-
-
 def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
     stack = StringStack()
@@ -139,8 +139,8 @@ def main(stdscr):
     while True:
         # display current state
         stdscr.clear()
-        stdscr.addstr(f"[{state_name(state)}]\n")
-        stdscr.addstr(str(state))
+        stdscr.addstr(repr(state))  # repr is state's name
+        stdscr.addstr(str(state))  # str is state's main text
         stdscr.addstr("\n\n")
 
         # display the stack
