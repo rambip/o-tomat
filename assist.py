@@ -14,9 +14,13 @@ And respond as well as I can.
 Type help for help
 """
 
+class State:
+    def __repr__(self):
+        return type(self).__name__
+
 
 # Default state. Also the initial one
-class MenuState:
+class MenuState(State):
     def __init__(self, message: str = "Waiting for command"):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
@@ -42,7 +46,7 @@ class MenuState:
         return self.message.split('\n')
 
 
-class HelpState:
+class HelpState(State):
     def update(self, msg, pile):
         if msg == "help":
             return HelpState()
@@ -59,7 +63,7 @@ class HelpState:
         ]
 
 
-class PushState:
+class PushState(State):
     """Push string to the stack."""
 
     def update(self, msg, pile):
@@ -75,7 +79,7 @@ class PushState:
         ]
 
 
-class PopState:
+class PopState(State):
     """Pop string from the stack."""
 
     def update(self, msg, pile):
@@ -95,8 +99,7 @@ class PopState:
 
 
 def get_input(stdscr, until_quote = False) -> str :
-    """ 
-    get input from the user
+    """Get input from the user
     either: - string of characters between quotes marks
             - word between two spaces 
     """
@@ -124,13 +127,8 @@ def get_input(stdscr, until_quote = False) -> str :
 
         else:
             # print the letter for the user
-            res = res + char
+            res += char
             stdscr.addch(char)
-
-
-def state_name(s) -> str :
-    # debug information
-    return type(s).__name__
 
 
 def main(stdscr):
@@ -141,7 +139,7 @@ def main(stdscr):
         stdscr.clear()
 
         state_box = state.render()
-        state_name_box = [f"[{state_name(state)}]"]
+        state_name_box = [f"[{repr(state)}]"]
         stack_box = stack.render(MAX_STACK_HEIGHT)
 
         # display debug information
