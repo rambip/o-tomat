@@ -16,16 +16,6 @@ Type help for help
 
 class State:
     def __repr__(self):
-        return type(self).__name__
-
-
-class State:
-    def update(self, msg: str, pile: StringStack):
-        if msg in self.transitions:
-            return self.transitions[msg]()
-        return self("      unknown command")
-
-    def __repr__(self) -> str:
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
 
@@ -33,11 +23,7 @@ class State:
 
 # Default state. Also the initial one
 class MenuState(State):
-<<<<<<< HEAD
-    def __init__(self, message: str = "      Waiting for command"):
-=======
     def __init__(self, message: str = "Waiting for command"):
->>>>>>> box-logic
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
@@ -59,11 +45,7 @@ class MenuState(State):
 
 
 class HelpState(State):
-<<<<<<< HEAD
-    def update(self, msg: str, pile: StringStack) -> State:
-=======
-    def update(self, msg, pile):
->>>>>>> box-logic
+    def update(self, msg, pile: StringStack) -> State:
         if msg == "help":
             return HelpState()
         return MenuState()
@@ -114,13 +96,8 @@ class PopState(State):
         ]
 
 
-<<<<<<< HEAD
 def get_input(stdscr, until_quote=False) -> str:
     """Get input from the user.
-=======
-def get_input(stdscr, until_quote = False) -> str :
-    """Get input from the user
->>>>>>> box-logic
     either: - string of characters between quotes marks
             - word between two spaces
     """
@@ -158,14 +135,9 @@ def main(stdscr):
 
     while True:
         stdscr.clear()
-<<<<<<< HEAD
-        stdscr.addstr(repr(state))  # repr is state's name
-        stdscr.addstr(str(state))  # str is state's main text
-        stdscr.addstr("\n\n")
-=======
 
         state_box = state.render()
-        state_name_box = [f"[{repr(state)}]"]
+        state_name_box = [repr(state)]
         stack_box = stack.render(MAX_STACK_HEIGHT)
 
         # display debug information
@@ -177,7 +149,6 @@ def main(stdscr):
         for i, l in enumerate(state_box):
             stdscr.move(i+2, 0)
             stdscr.addstr(l)
->>>>>>> box-logic
 
         # display the stack
         for i, l in enumerate(stack_box):
