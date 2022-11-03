@@ -2,19 +2,22 @@ import curses
 import random
 from string_stack import StringStack
 
-INTRO_MESSAGE = """
-        Hi, I'm your assistant !
+MAX_STACK_HEIGHT = 5
+MAX_INFO_WIDTH = 40
 
-        I will read every word you type,
-        And respond as well as I can.
+INTRO_MESSAGE = \
+"""Hi, I'm your assistant !
 
-        Type help for help
-        """
+I will read every word you type,
+And respond as well as I can.
+
+Type help for help
+"""
 
 
 # Default state. Also the initial one
 class MenuState:
-    def __init__(self, message: str = "      Waiting for command"):
+    def __init__(self, message: str = "Waiting for command"):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
@@ -33,10 +36,10 @@ class MenuState:
         """
         if msg in self.transitions:
             return self.transitions[msg]()
-        return MenuState("      unknown command")
+        return MenuState("unknown command")
 
-    def __str__(self) -> str:
-        return self.message
+    def render(self) -> [str]:
+        return self.message.split('\n')
 
 
 class HelpState:
@@ -45,15 +48,15 @@ class HelpState:
             return HelpState()
         return MenuState()
 
-    def __str__(self) -> str:
-        return f"""
-        - help: display this message
-        - exit: exit
-        - push: {PushState.__doc__}
-        - pop: {PopState.__doc__}
-
-        type any key to go home, then enter command
-        """
+    def render(self) -> [str]:
+        return [
+        "- help: display this message",
+        "- exit: exit",
+        "- push: {PushState.__doc__}",
+        "- pop: {PopState.__doc__}",
+        "type any key to go home,",
+        "then enter another command",
+        ]
 
 
 class PushState:
@@ -65,12 +68,11 @@ class PushState:
         pile.push(msg)
         return self
 
-    def __str__(self) -> str:
-        return """
-        every word will be added to the stack
-
-        type empty word to exit
-        """
+    def render(self) -> [str]:
+        return [
+        "every word will be added to the stack",
+        "type empty word to exit"
+        ]
 
 
 class PopState:
@@ -83,12 +85,13 @@ class PopState:
 
         return MenuState()
 
-    def __str__(self) -> str:
-        return """
-        every time you hit <Space>, I will remove a word from the stack
-
-        Hit a word to exit
-        """
+    def render(self) -> [str]:
+        return [
+        "every <Space> will pop",
+        "the top of the stack",
+        "",
+        "type any word to exit",
+        ]
 
 
 def get_input(stdscr, until_quote = False) -> str :
@@ -125,7 +128,7 @@ def get_input(stdscr, until_quote = False) -> str :
             stdscr.addch(char)
 
 
-def state_name(s):
+def state_name(s) -> str :
     # debug information
     return type(s).__name__
 
@@ -135,16 +138,31 @@ def main(stdscr):
     stack = StringStack()
 
     while True:
-        # display current state
         stdscr.clear()
-        stdscr.addstr(f"[{state_name(state)}]\n")
-        stdscr.addstr(str(state))
-        stdscr.addstr("\n\n")
+
+        state_box = state.render()
+        state_name_box = [f"[{state_name(state)}]"]
+        stack_box = stack.render(MAX_STACK_HEIGHT)
+
+        # display debug information
+        for i, l in enumerate(state_name_box):
+            stdscr.move(i, 0)
+            stdscr.addstr(l)
+
+        # display state for user
+        for i, l in enumerate(state_box):
+            stdscr.move(i+2, 0)
+            stdscr.addstr(l)
 
         # display the stack
-        stdscr.addstr(str(stack))
+        for i, l in enumerate(stack_box):
+            stdscr.move(i, MAX_INFO_WIDTH)
+            stdscr.addstr(l)
 
-        stdscr.addstr("\n\n>  ")
+        # display prompt
+        y = max(len(state_name_box) + len(state_box), MAX_STACK_HEIGHT)+2
+        stdscr.move(y, 2)
+        stdscr.addstr(">  ")
         stdscr.refresh()
 
         # Transition
