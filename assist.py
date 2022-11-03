@@ -2,14 +2,21 @@ import curses
 import random
 from string_stack import StringStack
 
-INTRO_MESSAGE = """
-        Hi, I'm your assistant !
+MAX_STACK_HEIGHT = 5
+MAX_INFO_WIDTH = 40
 
-        I will read every word you type,
-        And respond as well as I can.
+INTRO_MESSAGE = \
+"""Hi, I'm your assistant !
 
-        Type help for help
-        """
+I will read every word you type,
+And respond as well as I can.
+
+Type help for help
+"""
+
+class State:
+    def __repr__(self):
+        return type(self).__name__
 
 
 class State:
@@ -26,7 +33,11 @@ class State:
 
 # Default state. Also the initial one
 class MenuState(State):
+<<<<<<< HEAD
     def __init__(self, message: str = "      Waiting for command"):
+=======
+    def __init__(self, message: str = "Waiting for command"):
+>>>>>>> box-logic
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
@@ -41,27 +52,31 @@ class MenuState(State):
     def update(self, msg: str, pile: StringStack) -> State:
         if msg in self.transitions:
             return self.transitions[msg]()
-        return MenuState("      unknown command")
+        return MenuState("unknown command")
 
-    def __str__(self) -> str:
-        return self.message
+    def render(self) -> [str]:
+        return self.message.split('\n')
 
 
 class HelpState(State):
+<<<<<<< HEAD
     def update(self, msg: str, pile: StringStack) -> State:
+=======
+    def update(self, msg, pile):
+>>>>>>> box-logic
         if msg == "help":
             return HelpState()
         return MenuState()
 
-    def __str__(self) -> str:
-        return f"""
-        - help: display this message
-        - exit: exit
-        - push: {PushState.__doc__}
-        - pop: {PopState.__doc__}
-
-        type any key to go home, then enter command
-        """
+    def render(self) -> [str]:
+        return [
+        "- help: display this message",
+        "- exit: exit",
+        "- push: {PushState.__doc__}",
+        "- pop: {PopState.__doc__}",
+        "type any key to go home,",
+        "then enter another command",
+        ]
 
 
 class PushState(State):
@@ -73,12 +88,11 @@ class PushState(State):
         pile.push(msg)
         return self
 
-    def __str__(self) -> str:
-        return """
-        every word will be added to the stack
-
-        type empty word to exit
-        """
+    def render(self) -> [str]:
+        return [
+        "every word will be added to the stack",
+        "type empty word to exit"
+        ]
 
 
 class PopState(State):
@@ -91,16 +105,22 @@ class PopState(State):
 
         return MenuState()
 
-    def __str__(self) -> str:
-        return """
-        every time you hit <Space>, I will remove a word from the stack
+    def render(self) -> [str]:
+        return [
+        "every <Space> will pop",
+        "the top of the stack",
+        "",
+        "type any word to exit",
+        ]
 
-        Hit a word to exit
-        """
 
-
+<<<<<<< HEAD
 def get_input(stdscr, until_quote=False) -> str:
     """Get input from the user.
+=======
+def get_input(stdscr, until_quote = False) -> str :
+    """Get input from the user
+>>>>>>> box-logic
     either: - string of characters between quotes marks
             - word between two spaces
     """
@@ -137,16 +157,37 @@ def main(stdscr):
     stack = StringStack()
 
     while True:
-        # display current state
         stdscr.clear()
+<<<<<<< HEAD
         stdscr.addstr(repr(state))  # repr is state's name
         stdscr.addstr(str(state))  # str is state's main text
         stdscr.addstr("\n\n")
+=======
+
+        state_box = state.render()
+        state_name_box = [f"[{repr(state)}]"]
+        stack_box = stack.render(MAX_STACK_HEIGHT)
+
+        # display debug information
+        for i, l in enumerate(state_name_box):
+            stdscr.move(i, 0)
+            stdscr.addstr(l)
+
+        # display state for user
+        for i, l in enumerate(state_box):
+            stdscr.move(i+2, 0)
+            stdscr.addstr(l)
+>>>>>>> box-logic
 
         # display the stack
-        stdscr.addstr(str(stack))
+        for i, l in enumerate(stack_box):
+            stdscr.move(i, MAX_INFO_WIDTH)
+            stdscr.addstr(l)
 
-        stdscr.addstr("\n\n>  ")
+        # display prompt
+        y = max(len(state_name_box) + len(state_box), MAX_STACK_HEIGHT)+2
+        stdscr.move(y, 2)
+        stdscr.addstr(">  ")
         stdscr.refresh()
 
         # Transition

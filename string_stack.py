@@ -25,10 +25,13 @@ class StringStack(list):
         if word != "":
             self.append(word)
 
-    def __str__(self) -> str:
-        """Render the stack as a string."""
-        # return "[\t"+"\n\t".join(self) + "\n]"
-        res = " ┏\n ┃  "
-        res += "\n ┃  ".join(self)
-        res += "\n ┗"
+    def render(self, n) -> [str]:
+        """Render the stack as a string.
+        Args:
+           n = number of elements to display
+        """
+        res = []
+        res.append(" ┏")
+        res.extend([" ┃ " + e for e in self[-n:]])
+        res.append(" ┗")
         return res
