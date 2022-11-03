@@ -92,19 +92,29 @@ class PopState(State):
         Hit a word to exit
         """
 
-# Get a word from the user
-# TODO: use " to escape spaces ?
 
-
-def get_input(stdscr):
+def get_input(stdscr, until_quote = False) -> str :
+    """ 
+    get input from the user
+    either: - string of characters between quotes marks
+            - word between two spaces 
+    """
     res = ""
     while True:
         char = chr(stdscr.getch())
-        if char in [' ', '\n']:
-            # end of word
+
+        if char == '"':
+            if until_quote:
+                return res
+            else:
+                stdscr.addch(char)
+                return get_input(stdscr, until_quote = True)
+
+        if char == '\n' or char == ' ' and not until_quote:
+            # end of input
             return res
 
-        elif ord(char) == curses.KEY_BACKSPACE:
+        elif ord(char) in [curses.KEY_BACKSPACE, 127]:
             if res != "":
                 y, x = stdscr.getyx()
                 stdscr.move(y, x-1)
