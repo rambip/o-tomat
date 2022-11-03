@@ -95,10 +95,9 @@ class PopState(State):
 
 
 def get_input(stdscr, until_quote=False) -> str:
-    """ 
-    get input from the user
+    """Get input from the user.
     either: - string of characters between quotes marks
-            - word between two spaces 
+            - word between two spaces
     """
     res = ""
     while True:
@@ -120,11 +119,11 @@ def get_input(stdscr, until_quote=False) -> str:
                 y, x = stdscr.getyx()
                 stdscr.move(y, x-1)
                 stdscr.delch()
-                res = res[0:-1]
+                res = res[:-1]
 
         else:
             # print the letter for the user
-            res = res + char
+            res += char
             stdscr.addch(char)
 
 
