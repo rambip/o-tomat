@@ -11,6 +11,7 @@ INTRO_MESSAGE = """
         Type help for help
         """
 
+
 class State:
     def update(self, msg: str, pile: StringStack):
         if msg in self.transitions:
@@ -93,7 +94,7 @@ class PopState(State):
         """
 
 
-def get_input(stdscr, until_quote = False) -> str :
+def get_input(stdscr, until_quote=False) -> str:
     """ 
     get input from the user
     either: - string of characters between quotes marks
@@ -108,7 +109,7 @@ def get_input(stdscr, until_quote = False) -> str :
                 return res
             else:
                 stdscr.addch(char)
-                return get_input(stdscr, until_quote = True)
+                return get_input(stdscr, until_quote=True)
 
         if char == '\n' or char == ' ' and not until_quote:
             # end of input
