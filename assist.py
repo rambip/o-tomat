@@ -2,7 +2,8 @@ import curses
 import random
 from string_stack import StringStack
 
-MAX_STACK_HEIGHT = 5
+MAX_STACK_HEIGHT = 6
+STACK_MARGIN_RIGHT = 5
 MAX_INFO_WIDTH = 40
 
 INTRO_MESSAGE = \
@@ -128,6 +129,51 @@ def get_input(stdscr, until_quote=False) -> str:
             res += char
             stdscr.addch(char)
 
+def width(b) -> int:
+    """width of a box of text"""
+    return max([len(line) for line in b])
+
+
+def height(b) -> int:
+    """height of a box of text"""
+    return len(b)
+
+
+def display(stdscr, state_name, state_box, stack_box, stack_left = True):
+    """display the content on the screen
+    Args:
+       - stack_left: indicate if we want to display the stack
+                                -> on the right of the state information
+                                -> below the state information
+    """
+    # display debug information
+    stdscr.move(0, 0)
+    stdscr.addstr(state_name)
+
+    # display state for user
+    for i, l in enumerate(state_box):
+        stdscr.move(i+2, 0)
+        stdscr.addstr(l)
+
+    # display the stack
+    if stack_left:
+        for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
+            stdscr.move(i, MAX_INFO_WIDTH)
+            stdscr.addstr(l)
+            y_prompt = max(height(state_box), MAX_STACK_HEIGHT)+2
+    else:
+        for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
+            stdscr.move(height(state_box)+3+i, 0)
+            stdscr.addstr(l)
+            y_prompt = height(state_box)+ MAX_STACK_HEIGHT+3
+
+
+    # display prompt
+    stdscr.move(y_prompt, 2)
+    stdscr.addstr(">  ")
+    stdscr.refresh()
+
+
 
 def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
@@ -137,29 +183,18 @@ def main(stdscr):
         stdscr.clear()
 
         state_box = state.render()
-        state_name_box = [repr(state)]
-        stack_box = stack.render(MAX_STACK_HEIGHT)
+        stack_box = stack.render()
 
-        # display debug information
-        for i, l in enumerate(state_name_box):
-            stdscr.move(i, 0)
-            stdscr.addstr(l)
+        # number of columns between the left of the state information and the right of the screen
+        space_for_stack = stdscr.getmaxyx()[1] - MAX_INFO_WIDTH
 
-        # display state for user
-        for i, l in enumerate(state_box):
-            stdscr.move(i+2, 0)
-            stdscr.addstr(l)
+        display(stdscr,
+                repr(state),
+                state_box,
+                stack_box,
+                space_for_stack > width(stack_box) + STACK_MARGIN_RIGHT
+        )
 
-        # display the stack
-        for i, l in enumerate(stack_box):
-            stdscr.move(i, MAX_INFO_WIDTH)
-            stdscr.addstr(l)
-
-        # display prompt
-        y = max(len(state_name_box) + len(state_box), MAX_STACK_HEIGHT)+2
-        stdscr.move(y, 2)
-        stdscr.addstr(">  ")
-        stdscr.refresh()
 
         # Transition
         # Based on a pushdown automaton
