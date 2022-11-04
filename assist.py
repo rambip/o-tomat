@@ -20,6 +20,14 @@ class State:
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
 
+    def instant(self, stack):
+        """instantanious transition.
+        By default, this function does nothing.
+        But some states (like pop) does not need to render,
+        and then update based on a message.
+        They will use this functionnality"""
+        return self
+
 
 
 # Default state. Also the initial one
@@ -36,7 +44,7 @@ class MenuState(State):
         }
         self.message = message
 
-    def update(self, msg: str, pile: StringStack) -> State:
+    def update(self, msg: str, stack: StringStack) -> State:
         if msg in self.transitions:
             return self.transitions[msg]()
         return MenuState("unknown command")
@@ -46,7 +54,7 @@ class MenuState(State):
 
 
 class HelpState(State):
-    def update(self, msg, pile: StringStack) -> State:
+    def update(self, msg, stack: StringStack) -> State:
         if msg == "help":
             return HelpState()
         return MenuState()
@@ -65,35 +73,29 @@ class HelpState(State):
 class PushState(State):
     """Push string to the stack."""
 
-    def update(self, msg: str, pile: StringStack) -> State:
-        if msg == "":
-            return MenuState()
-        pile.push(msg)
-        return self
+    def update(self, msg: str, stack: StringStack) -> State:
+        stack.push(msg)
+
+        return MenuState()
 
     def render(self) -> [str]:
         return [
-        "every word will be added to the stack",
-        "type empty word to exit"
+        "type a word, it will be added to the stack",
         ]
 
 
 class PopState(State):
     """Pop string from the stack."""
 
-    def update(self, msg: str, pile: StringStack) -> State:
-        if msg == "":
-            pile.pop()
-            return self
-
+    def instant(self, stack: StringStack) -> State:
+        # instantanious transition
+        stack.pop()
         return MenuState()
+
 
     def render(self) -> [str]:
         return [
-        "every <Space> will pop",
-        "the top of the stack",
-        "",
-        "type any word to exit",
+        "if you see this it is a bug",
         ]
 
 
@@ -118,6 +120,7 @@ def get_input(stdscr, until_quote=False) -> str:
             return res
 
         elif ord(char) in [curses.KEY_BACKSPACE, 127]:
+            # backspace key (127 is for some strange terminals)
             if res != "":
                 y, x = stdscr.getyx()
                 stdscr.move(y, x-1)
@@ -200,6 +203,8 @@ def main(stdscr):
         # Based on a pushdown automaton
         input_msg = get_input(stdscr)
         state = state.update(input_msg, stack)
+        # if instantanious transition:
+        state = state.instant(stack)
         # Exit if no transition
         if state is None:
             exit()
