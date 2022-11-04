@@ -20,13 +20,13 @@ class State:
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
 
-    def instant(self, stack):
+    #def instant(self, stack):
         """instantanious transition.
-        By default, this function does nothing.
-        But some states (like pop) does not need to render,
+        By default, a state does not have an instantanious transition.
+        A state must implement update or instant, BUT NOT BOTH !
+        Some states (like pop) does not need to render,
         and then update based on a message.
         They will use this functionnality"""
-        return self
 
 
 
@@ -204,7 +204,9 @@ def main(stdscr):
         input_msg = get_input(stdscr)
         state = state.update(input_msg, stack)
         # if instantanious transition:
-        state = state.instant(stack)
+        while hasattr(state, "instant"):
+            state = state.instant(stack)
+
         # Exit if no transition
         if state is None:
             exit()
