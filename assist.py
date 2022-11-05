@@ -54,8 +54,6 @@ class State:
         They will use this functionnality"""
 
 
-
-
 # Default state. Also the initial one
 class MenuState(State):
     def __init__(self, message: str = "Waiting for command"):
@@ -212,34 +210,37 @@ def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
     stack = StringStack()
 
-    while True:
-        stdscr.clear()
+    try:
+        while True:
+            stdscr.clear()
 
-        state_box = state.render()
-        stack_box = stack.render()
+            state_box = state.render()
+            stack_box = stack.render()
 
-        # number of columns between the left of the state information and the right of the screen
-        space_for_stack = stdscr.getmaxyx()[1] - MAX_INFO_WIDTH
+            # number of columns between the left of the state information and the right of the screen
+            space_for_stack = stdscr.getmaxyx()[1] - MAX_INFO_WIDTH
 
-        display(stdscr,
-                repr(state),
-                state_box,
-                stack_box,
-                space_for_stack > width(stack_box) + STACK_MARGIN_RIGHT
-        )
+            display(stdscr,
+                    repr(state),
+                    state_box,
+                    stack_box,
+                    space_for_stack > width(stack_box) + STACK_MARGIN_RIGHT
+            )
 
 
-        # Transition
-        # Based on a pushdown automaton
-        input_msg = get_input(stdscr)
-        state = state.update(input_msg, stack)
-        # if instantanious transition:
-        while hasattr(state, "instant"):
-            state = state.instant(stack)
+            # Transition
+            # Based on a pushdown automaton
+            input_msg = get_input(stdscr)
+            state = state.update(input_msg, stack)
+            # if instantanious transition:
+            while hasattr(state, "instant"):
+                state = state.instant(stack)
 
-        # Exit if no transition
-        if state is None:
-            exit()
+            # Exit if no transition
+            if state is None:
+                exit()
+    except (KeyboardInterrupt, EOFError):
+        exit()
 
 
 if __name__ == "__main__":
