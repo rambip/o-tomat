@@ -66,6 +66,7 @@ class MenuState(State):
             "exit": lambda: None,
             "push": PushState,
             "pop": PopState,
+            "join": JoinState,
         }
         self.message = message
 
@@ -125,6 +126,19 @@ class PopState(State):
         return [
         "if you see this it is a bug",
         ]
+
+class JoinState(State):
+    """Join the two top values of the stack.
+    This "natural" join puts the top of the stack after the second value of the
+    satck, since that is visually just like removing the newline separation
+    between both.
+    """
+
+    def instant(self, stack: StringStack) -> State:
+        top, snd = stack.pop(), stack.pop()
+        stack.push(snd + top)
+        return MenuState()
+
 
 
 def get_input(stdscr, until_quote=False) -> str:
