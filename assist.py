@@ -19,7 +19,7 @@ class State:
     def __init__(self):
         self.check_instant_update_compat()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
 
@@ -77,7 +77,7 @@ class MenuState(State):
     # def instant(self, stack: StringStack) -> State:
     #     pass
 
-    def render(self) -> [str]:
+    def render(self) -> list[str]:
         return self.message.split('\n')
 
 
@@ -87,7 +87,7 @@ class HelpState(State):
             return HelpState()
         return MenuState()
 
-    def render(self) -> [str]:
+    def render(self) -> list[str]:
         return [
         "- help: display this message",
         "- exit: exit",
@@ -106,7 +106,7 @@ class PushState(State):
 
         return MenuState()
 
-    def render(self) -> [str]:
+    def render(self) -> list[str]:
         return [
         "type a word, it will be added to the stack",
         ]
@@ -121,7 +121,7 @@ class PopState(State):
         return MenuState()
 
 
-    def render(self) -> [str]:
+    def render(self) -> list[str]:
         return [
         "if you see this it is a bug",
         ]
