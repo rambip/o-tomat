@@ -139,6 +139,15 @@ class JoinState(State):
         stack.push(snd + top)
         return MenuState()
 
+class ReverseJoinState(State):
+    """Join the two top values of the stack, but reversed.
+    Contratly the the "natural" join (`JoinState`), this join pust the top of the stack before the second value of the stack.
+    That results in a "reversed" version of the stack.
+    """
+    def instant(self, stack: StringStack) -> State:
+        top, snd = stack.pop(), stack.pop()
+        stack.push(top + snd)
+        return MenuState()
 
 
 def get_input(stdscr, until_quote=False) -> str:
