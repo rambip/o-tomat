@@ -63,8 +63,8 @@ class HelpState(State):
         return [
         "- help: display this message",
         "- exit: exit",
-        "- push: {PushState.__doc__}",
-        "- pop: {PopState.__doc__}",
+        f"- push: {PushState.__doc__}",
+        f"- pop: {PopState.__doc__}",
         "type any key to go home,",
         "then enter another command",
         ]
