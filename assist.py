@@ -16,9 +16,34 @@ Type help for help
 """
 
 class State:
+    def __init__(self):
+        self.check_instant_update_compat()
+
     def __repr__(self):
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
+
+    def check_instant_update_compat(self):
+        """Check if the obect has a `update` or an `instant` method but not both.
+        Raises:
+            TypeError: If the object has no `update` or `instant` method.
+                       If the object has both `update` and `instant` methods.
+        """
+        if self.has_instant() and self.has_update():
+            raise TypeError("State object can have an `update` or an `instant` method, but not both.")
+        if (not self.has_instant()) and (not self.has_update()):
+            raise TypeError("State object must have an `update` or an `instant` method.")
+
+    def has_instant(self) -> bool:
+        return hasattr(self, 'instant')
+
+    def has_update(self) -> bool:
+        return hasattr(self, 'update')
+
+    # def update(self, msg: str, stack: StringStack):
+        """how to transition from the current state to any other, depending on
+        the typed command.
+        """
 
     #def instant(self, stack):
         """instantanious transition.
@@ -30,9 +55,11 @@ class State:
 
 
 
+
 # Default state. Also the initial one
 class MenuState(State):
     def __init__(self, message: str = "Waiting for command"):
+        super(MenuState, self).__init__()  # call parent class' constructor
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
@@ -48,6 +75,9 @@ class MenuState(State):
         if msg in self.transitions:
             return self.transitions[msg]()
         return MenuState("unknown command")
+
+    # def instant(self, stack: StringStack) -> State:
+    #     pass
 
     def render(self) -> [str]:
         return self.message.split('\n')
