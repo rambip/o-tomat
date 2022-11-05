@@ -4,7 +4,7 @@ from string_stack import StringStack
 
 MAX_STACK_HEIGHT = 6
 STACK_MARGIN_RIGHT = 5
-MAX_INFO_WIDTH = 40
+MAX_INFO_WIDTH = 45
 
 INTRO_MESSAGE = \
 """Hi, I'm your assistant !
@@ -13,6 +13,15 @@ I will read every word you type,
 And respond as well as I can.
 
 Type help for help
+Hit space to repeat last command
+"""
+
+# FIXME: define as a constant ?
+def get_help_message():
+    return f"""- help: display this message",
+- exit: exit",
+- push: {PushState.__doc__}
+- pop: {PopState.__doc__}
 """
 
 class State:
@@ -22,6 +31,9 @@ class State:
     def __repr__(self) -> str:
         """Show the name of the state itself."""
         return f"[{type(self).__name__}]"
+
+    def __eq__(self, other) -> bool:
+        return repr(self) == repr(other)
 
     def check_instant_update_compat(self):
         """Check if the obect has a `update` or an `instant` method but not both.
@@ -45,7 +57,7 @@ class State:
         the typed command.
         """
 
-    #def instant(self, stack):
+    # def instant(self, stack):
         """instantanious transition.
         By default, a state does not have an instantanious transition.
         A state must implement update or instant, BUT NOT BOTH !
@@ -61,42 +73,25 @@ class MenuState(State):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
-            "help": HelpState, "?": HelpState,
-            "": MenuState,
-            "exit": lambda: None,
-            "push": PushState,
-            "pop": PopState,
-            "join": JoinState,
+            "push": PushState(),
+            "pop": PopState(),
+            "join": JoinState(),
         }
         self.message = message
 
     def update(self, msg: str, stack: StringStack) -> State:
+        if msg == "exit":
+            return 
+        if msg in ["help", "?"]:
+            return MenuState(get_help_message())
         if msg in self.transitions:
-            return self.transitions[msg]()
+            return self.transitions[msg]
         return MenuState("unknown command")
 
-    # def instant(self, stack: StringStack) -> State:
-    #     pass
 
     def render(self) -> list[str]:
         return self.message.split('\n')
 
-
-class HelpState(State):
-    def update(self, msg, stack: StringStack) -> State:
-        if msg == "help":
-            return HelpState()
-        return MenuState()
-
-    def render(self) -> list[str]:
-        return [
-        "- help: display this message",
-        "- exit: exit",
-        f"- push: {PushState.__doc__}",
-        f"- pop: {PopState.__doc__}",
-        "type any key to go home,",
-        "then enter another command",
-        ]
 
 
 class PushState(State):
@@ -228,10 +223,19 @@ def display(stdscr, state_name, state_box, stack_box, stack_left = True):
     stdscr.refresh()
 
 
+def last_transition_from(history, state) -> (str, State):
+    for i in reversed(range(len(history)-1)):
+        if history[i][1] == state:
+            return history[i+1]
+    return ("", MenuState("there is no last command to repeat"))
 
 def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
     stack = StringStack()
+
+    # history of all the (word, state) transitions
+    # word is "" if in is an instantanious transition
+    history = [("", state)]
 
     try:
         while True:
@@ -254,10 +258,17 @@ def main(stdscr):
             # Transition
             # Based on a pushdown automaton
             input_msg = get_input(stdscr)
-            state = state.update(input_msg, stack)
+            if input_msg == "":
+                _, state = last_transition_from(history, state)
+            else:
+                state = state.update(input_msg, stack)
+
+            history.append((input_msg, state))
+
             # if instantanious transition:
             while hasattr(state, "instant"):
                 state = state.instant(stack)
+                history.append(("",state))
 
             # Exit if no transition
             if state is None:
