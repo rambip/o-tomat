@@ -75,12 +75,12 @@ def display(stdscr, state_name, state_box, stack_box, stack_left = True):
         for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
             stdscr.move(i, MAX_INFO_WIDTH)
             stdscr.addstr(l)
-            y_prompt = max(height(state_box), MAX_STACK_HEIGHT)+2
+            y_prompt = max(text.height(state_box), MAX_STACK_HEIGHT)+2
     else:
         for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
-            stdscr.move(height(state_box)+3+i, 0)
+            stdscr.move(text.height(state_box)+3+i, 0)
             stdscr.addstr(l)
-            y_prompt = height(state_box)+ MAX_STACK_HEIGHT+3
+            y_prompt = text.height(state_box)+ MAX_STACK_HEIGHT+3
 
 
     # display prompt
@@ -117,7 +117,7 @@ def main(stdscr):
                     repr(state),
                     state_box,
                     stack_box,
-                    space_for_stack > width(stack_box) + STACK_MARGIN_RIGHT
+                    space_for_stack > text.width(stack_box) + STACK_MARGIN_RIGHT
             )
 
 
