@@ -131,14 +131,16 @@ def main(stdscr):
 
             history.append((input_msg, state))
 
-            # if instantanious transition:
-            while hasattr(state, "instant"):
-                state = state.instant(stack)
-                history.append(("",state))
-
             # Exit if no transition
             if state is None:
                 exit()
+
+
+            # if instantanious transition:
+            while state.has_instant():
+                state = state.instant(stack)
+                history.append(("",state))
+
     except (KeyboardInterrupt, EOFError):
         exit()
 
