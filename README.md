@@ -1,4 +1,5 @@
-# o-tomat
+# o-tomat 🍅
+
 
 Tomat is your assistant
 
