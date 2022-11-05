@@ -9,7 +9,7 @@ How Tomat can be helpful ?
 By stacking your commands of course !
 
 ## Current look
-![](screenshots/1.jpg)
+![o-tomat screenshot 1](screenshots/1.png)
 
 
 
