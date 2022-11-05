@@ -16,7 +16,7 @@ class StringStack(list):
             str: The top element of the stack (it is removed from the stack). None if the stack is empty.
         """
         if len(self) != 0:
-            list.pop(self)
+            return list.pop(self)
 
     def push(self, word: str) -> None:
         """Push a string onto the stack.
