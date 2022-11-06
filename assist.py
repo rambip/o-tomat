@@ -4,7 +4,7 @@ from string_stack import StringStack
 from primitives import *
 import text  # text box functions
 
-MAX_STACK_HEIGHT = 6
+MAX_STACK_HEIGHT = 10
 STACK_MARGIN_RIGHT = 5
 MAX_INFO_WIDTH = 45
 
@@ -56,10 +56,12 @@ def get_input(stdscr, until_quote=False) -> str:
 def display(stdscr, state_name, state_box, stack_box, stack_left=True) -> None:
     """display the content on the screen
     Args:
-       - stack_left: indicate if we want to display the stack
+        - stack_left: indicate if we want to display the stack
                                 -> on the right of the state information
                                 -> below the state information
     """
+    state_box = text.wrap(state_box, MAX_INFO_WIDTH)  # wrap long lines
+
     # display debug information
     stdscr.move(0, 0)
     stdscr.addstr(state_name)
@@ -79,7 +81,7 @@ def display(stdscr, state_name, state_box, stack_box, stack_left=True) -> None:
         for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
             stdscr.move(text.height(state_box)+3+i, 0)
             stdscr.addstr(l)
-            y_prompt = text.height(state_box) + MAX_STACK_HEIGHT+3
+            y_prompt = text.height(state_box) + MAX_STACK_HEIGHT + 3
 
     # display prompt
     stdscr.move(y_prompt, 2)
