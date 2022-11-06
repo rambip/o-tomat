@@ -102,7 +102,23 @@ class MenuState(State):
 - pop: {PopState.__doc__}
     """
 
+class RepeatLastActionState(HistoricalState):
+    def instant(self, stack: StringStack, history: list[str, State]) -> State:
+        if len(history) <= 1:
+            return MenuState()
+        # get the state the last command was executed in
+        # that is the las non-instantanious state
+        idx_state_executed_in = -2
+        # while the corresponding state is an instantanious transition state
+        while history[idx_state_executed_in][0] == "":
+            # go to the previous state
+            idx_state_executed_in -= 1
 
+        state_executed_in = history[idx_state_executed_in][1]
+
+        action_executed = history[idx_state_executed_in + 1][0]
+
+        return state_executed_in().update(action_executed)
 
 
 # TODO: class that shows the contents of the History
