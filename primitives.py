@@ -73,9 +73,9 @@ class MenuState(State):
     # FIXME: define as a constant ?
     def get_help_message(self) -> str:
         return f"""- help: display this message",
-    - exit: exit",
-    - push: {PushState.__doc__}
-    - pop: {PopState.__doc__}
+- exit: exit",
+- push: {PushState.__doc__}
+- pop: {PopState.__doc__}
     """
 
 
