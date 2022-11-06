@@ -1,7 +1,7 @@
 from string_stack import StringStack
 
 
-class State:
+class State:  # abstract class
     def __init__(self):
         self.check_instant_update_compat()
 
@@ -31,18 +31,24 @@ class State:
     def has_update(self) -> bool:
         return hasattr(self, 'update')
 
-    # def update(self, msg: str, stack: StringStack) -> State:
+    def update(self, msg: str, stack: StringStack) -> State:
         """how to transition from the current state to any other, depending on
         the typed command.
         """
+        pass
 
-    # def instant(self, stack) -> State:
+    def instant(self, stack: StringStack) -> State:
         """instantanious transition.
         By default, a state does not have an instantanious transition.
         A state must implement update or instant, BUT NOT BOTH !
         Some states (like pop) does not need to render,
         and then update based on a message.
         They will use this functionnality"""
+        # NOTE: this object cannot be instantiated, because it has both an
+        # update and an instant method. They are here only for the purpose of
+        # type hinting. This class is anyway abstract (not to be ever
+        # instantiated, but only inherited from).
+        pass
 
 
 # Default state. Also the initial one
@@ -77,6 +83,8 @@ class MenuState(State):
 - push: {PushState.__doc__}
 - pop: {PopState.__doc__}
     """
+
+
 
 
 # TODO: class that shows the contents of the History
