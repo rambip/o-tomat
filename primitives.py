@@ -50,6 +50,24 @@ class State:  # abstract class
         # instantiated, but only inherited from).
         pass
 
+class HistoricalState(State):  # abstract class
+    """State that needs to know the history.
+    The `update` and `instant` methods have the mandatory `history` argument,
+    that is the history of the commands typed (hence, a list containing couples
+    of the command typed, and the State it went to).
+    """
+    def update(self,
+               msg: str,
+               stack: StringStack,
+               history: list[str, State]) -> State:
+        pass
+
+    def instant(self, stack: StringStack, history: list[str, State]) -> State:
+        # NOTE: this object cannot be instantiated, because it has both an
+        # update and an instant method. They are here only for the purpose of
+        # type hinting. This class is anyway abstract (not to be ever
+        # instantiated, but only inherited from).
+        pass
 
 # Default state. Also the initial one
 class MenuState(State):
