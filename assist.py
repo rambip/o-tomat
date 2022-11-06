@@ -54,7 +54,7 @@ def get_input(stdscr, until_quote=False) -> str:
             stdscr.addch(char)
 
 
-def display(stdscr, state_name, state_box, stack_box, stack_left = True):
+def display(stdscr, state_name, state_box, stack_box, stack_left = True) -> None:
     """display the content on the screen
     Args:
        - stack_left: indicate if we want to display the stack

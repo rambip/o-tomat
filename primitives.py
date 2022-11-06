@@ -28,12 +28,12 @@ class State:
     def has_update(self) -> bool:
         return hasattr(self, 'update')
 
-    # def update(self, msg: str, stack: StringStack):
+    # def update(self, msg: str, stack: StringStack) -> State:
         """how to transition from the current state to any other, depending on
         the typed command.
         """
 
-    # def instant(self, stack):
+    # def instant(self, stack) -> State:
         """instantanious transition.
         By default, a state does not have an instantanious transition.
         A state must implement update or instant, BUT NOT BOTH !
@@ -71,7 +71,7 @@ class MenuState(State):
         return self.message.split('\n')
 
     # FIXME: define as a constant ?
-    def get_help_message(self):
+    def get_help_message(self) -> str:
         return f"""- help: display this message",
     - exit: exit",
     - push: {PushState.__doc__}
