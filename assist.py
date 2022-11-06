@@ -126,6 +126,7 @@ def main(stdscr):
 
             # Transition
             # Based on a pushdown automaton
+            # TODO: gestion of HistoricalStates
             input_msg = get_input(stdscr)
             if input_msg == "":
                 _, state = last_transition_from(history, state)
