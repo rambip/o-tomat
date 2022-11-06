@@ -9,6 +9,9 @@
  - files tools: copy, move, delete ...
  - emoji: get emoji based on name
 
+# Development
+ - FIXME and TODO policy
+     - The person that created the code is responsible for either modifying the code, or adding a commment to explain why there is nothing to modify.
 
 # New ideas:
  - 2 stacks: one for numbers and one for strings
