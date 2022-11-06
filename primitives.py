@@ -79,6 +79,10 @@ class MenuState(State):
     """
 
 
+# TODO: class that shows the contents of the History
+# class ShowHistoryState(State):
+#     def update(self, msg: str, stack: String, history: list[str, str]) -> State:
+
 class PushState(State):
     """Push string to the stack."""
 
