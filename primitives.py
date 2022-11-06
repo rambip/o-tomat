@@ -1,6 +1,7 @@
 from string_stack import StringStack
 
 
+State = 'State'  # so type hinting works
 class State:  # abstract class
     def __init__(self):
         self.check_instant_update_compat()
@@ -31,24 +32,20 @@ class State:  # abstract class
     def has_update(self) -> bool:
         return hasattr(self, 'update')
 
-    def update(self, msg: str, stack: StringStack) -> State:
-        """how to transition from the current state to any other, depending on
-        the typed command.
-        """
-        pass
+    # def update(self, msg: str, stack: StringStack) -> State:
+    #     """how to transition from the current state to any other, depending on
+    #     the typed command.
+    #     """
+    #     pass
 
-    def instant(self, stack: StringStack) -> State:
-        """instantanious transition.
-        By default, a state does not have an instantanious transition.
-        A state must implement update or instant, BUT NOT BOTH !
-        Some states (like pop) does not need to render,
-        and then update based on a message.
-        They will use this functionnality"""
-        # NOTE: this object cannot be instantiated, because it has both an
-        # update and an instant method. They are here only for the purpose of
-        # type hinting. This class is anyway abstract (not to be ever
-        # instantiated, but only inherited from).
-        pass
+    # def instant(self, stack: StringStack) -> State:
+    #     """instantanious transition.
+    #     By default, a state does not have an instantanious transition.
+    #     A state must implement update or instant, BUT NOT BOTH !
+    #     Some states (like pop) does not need to render,
+    #     and then update based on a message.
+    #     They will use this functionnality"""
+    #     pass
 
 class HistoricalState(State):  # abstract class
     """State that needs to know the history.
@@ -56,18 +53,15 @@ class HistoricalState(State):  # abstract class
     that is the history of the commands typed (hence, a list containing couples
     of the command typed, and the State it went to).
     """
-    def update(self,
-               msg: str,
-               stack: StringStack,
-               history: list[str, State]) -> State:
-        pass
 
-    def instant(self, stack: StringStack, history: list[str, State]) -> State:
-        # NOTE: this object cannot be instantiated, because it has both an
-        # update and an instant method. They are here only for the purpose of
-        # type hinting. This class is anyway abstract (not to be ever
-        # instantiated, but only inherited from).
-        pass
+    # def update(self,
+    #            msg: str,
+    #            stack: StringStack,
+    #            history: list[str, State]) -> State:
+    #     pass
+
+    # def instant(self, stack: StringStack, history: list[str, State]) -> State:
+    #     pass
 
 # Default state. Also the initial one
 class MenuState(State):
@@ -79,6 +73,7 @@ class MenuState(State):
             "push": PushState(),
             "pop": PopState(),
             "join": JoinState(),
+            "repeat": RepeatLastActionState(),
         }
         self.message = message
 
