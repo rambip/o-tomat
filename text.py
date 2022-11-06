@@ -31,8 +31,8 @@ def wrap(txt: list[str], max_width: int) -> list[str]:
         if len(line) < max_width:  # nothing to wrap
             res.append(line)
         else:
-            # (len(line) // max_width) is the number of lines you'll get
+            # (1 + len(line) // max_width) is the number of lines you'll get
             # splitting the current one
-            for i in range(len(line) // max_width):
+            for i in range(1 + len(line) // max_width):
                 res.append(line[max_width*i:max_width*(i+1)])
     return res
