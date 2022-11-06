@@ -5,7 +5,7 @@ Text boxes are what the UI manipulates.
 
 def width(txt: list[str]) -> int:
     """width of a box of text"""
-    return max([len(line) for line in txt])
+    return max(map(len, txt))
 
 
 def height(txt: list[str]) -> int:
