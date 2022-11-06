@@ -53,6 +53,8 @@ def get_input(stdscr, until_quote=False) -> str:
             stdscr.addch(char)
 
 
+
+# FIXME: the argument shouldn't be stack_left, but stack_right ?
 def display(stdscr, state_name, state_box, stack_box, stack_left=True) -> None:
     """display the content on the screen
     Args:
