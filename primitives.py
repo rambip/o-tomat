@@ -1,5 +1,6 @@
 from string_stack import StringStack
 
+
 class State:
     def __init__(self):
         self.check_instant_update_compat()
@@ -18,9 +19,11 @@ class State:
                        If the object has both `update` and `instant` methods.
         """
         if self.has_instant() and self.has_update():
-            raise TypeError("State object can have an `update` or an `instant` method, but not both.")
+            raise TypeError(
+                "State object can have an `update` or an `instant` method, but not both.")
         if (not self.has_instant()) and (not self.has_update()):
-            raise TypeError("State object must have an `update` or an `instant` method.")
+            raise TypeError(
+                "State object must have an `update` or an `instant` method.")
 
     def has_instant(self) -> bool:
         return hasattr(self, 'instant')
@@ -42,8 +45,6 @@ class State:
         They will use this functionnality"""
 
 
-
-
 # Default state. Also the initial one
 class MenuState(State):
     def __init__(self, message: str = "Waiting for command"):
@@ -59,13 +60,12 @@ class MenuState(State):
 
     def update(self, msg: str, stack: StringStack) -> State:
         if msg == "exit":
-            return 
+            return
         if msg in ["help", "?"]:
             return MenuState(self.get_help_message())
         if msg in self.transitions:
             return self.transitions[msg]
         return MenuState("unknown command")
-
 
     def render(self) -> list[str]:
         return self.message.split('\n')
@@ -93,7 +93,7 @@ class PushState(State):
 
     def render(self) -> list[str]:
         return [
-        "type a word, it will be added to the stack",
+            "type a word, it will be added to the stack",
         ]
 
 
@@ -105,11 +105,11 @@ class PopState(State):
         stack.pop()
         return MenuState()
 
-
     def render(self) -> list[str]:
         return [
-        "if you see this it is a bug",
+            "if you see this it is a bug",
         ]
+
 
 class JoinState(State):
     """Join the two top values of the stack.
@@ -123,13 +123,14 @@ class JoinState(State):
         stack.push(snd + top)
         return MenuState()
 
+
 class ReverseJoinState(State):
     """Join the two top values of the stack, but reversed.
     Contratly the the "natural" join (`JoinState`), this join pust the top of the stack before the second value of the stack.
     That results in a "reversed" version of the stack.
     """
+
     def instant(self, stack: StringStack) -> State:
         top, snd = stack.pop(), stack.pop()
         stack.push(top + snd)
         return MenuState()
-

@@ -9,7 +9,7 @@ STACK_MARGIN_RIGHT = 5
 MAX_INFO_WIDTH = 45
 
 INTRO_MESSAGE = \
-"""Hi, I'm your assistant !
+    """Hi, I'm your assistant !
 
 I will read every word you type,
 And respond as well as I can.
@@ -17,7 +17,6 @@ And respond as well as I can.
 Type help for help
 Hit space to repeat last command
 """
-
 
 
 def get_input(stdscr, until_quote=False) -> str:
@@ -54,7 +53,7 @@ def get_input(stdscr, until_quote=False) -> str:
             stdscr.addch(char)
 
 
-def display(stdscr, state_name, state_box, stack_box, stack_left = True) -> None:
+def display(stdscr, state_name, state_box, stack_box, stack_left=True) -> None:
     """display the content on the screen
     Args:
        - stack_left: indicate if we want to display the stack
@@ -80,8 +79,7 @@ def display(stdscr, state_name, state_box, stack_box, stack_left = True) -> None
         for i, l in enumerate(stack_box[-MAX_STACK_HEIGHT:]):
             stdscr.move(text.height(state_box)+3+i, 0)
             stdscr.addstr(l)
-            y_prompt = text.height(state_box)+ MAX_STACK_HEIGHT+3
-
+            y_prompt = text.height(state_box) + MAX_STACK_HEIGHT+3
 
     # display prompt
     stdscr.move(y_prompt, 2)
@@ -118,9 +116,9 @@ def main(stdscr):
                     repr(state),
                     state_box,
                     stack_box,
-                    space_for_stack > text.width(stack_box) + STACK_MARGIN_RIGHT
-            )
-
+                    space_for_stack > text.width(
+                        stack_box) + STACK_MARGIN_RIGHT
+                    )
 
             # Transition
             # Based on a pushdown automaton

@@ -3,6 +3,7 @@ Functions about text box : list of strings.
 Text boxes are what the UI manipulates.
 """
 
+
 def width(txt: list[str]) -> int:
     """width of a box of text"""
     return max(map(len, txt))
@@ -35,5 +36,3 @@ def wrap(txt: list[str], max_width: int) -> list[str]:
             for i in range(len(line) // max_width):
                 res.append(line[max_width*i:max_width*(i+1)])
     return res
-
-
