@@ -95,6 +95,7 @@ def last_transition_from(history, state) -> (str, State):
             return history[i+1]
     return ("", MenuState("there is no last command to repeat"))
 
+
 def main(stdscr):
     state = MenuState(INTRO_MESSAGE)
     stack = StringStack()
@@ -132,14 +133,16 @@ def main(stdscr):
             history.append((input_msg, state))
 
             # Exit if no transition
+            # should be before any test on `state`, because else `sate` could
+            # be None (and None is not a <State> object)
             if state is None:
                 exit()
 
-
             # if instantanious transition:
+            # go to the next state up to the first non-instantanious transition
             while state.has_instant():
                 state = state.instant(stack)
-                history.append(("",state))
+                history.append(("", state))
 
     except (KeyboardInterrupt, EOFError):
         exit()
