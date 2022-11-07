@@ -70,9 +70,9 @@ class MenuState(State):
         # has to be defined inside the constructor, because the reference to
         # the class itself (MenuState) will be impossible else
         self.transitions = {
-            "push": PushState(),
-            "pop": PopState(),
-            "join": JoinState(),
+            "push": PushState(), ":": PushState(),
+            "pop": PopState(), "x": PopState(),
+            "join": JoinState(), ",": JoinState(),
             "repeat": RepeatLastActionState(),
         }
         self.message = message
@@ -105,15 +105,22 @@ class RepeatLastActionState(HistoricalState):
         # that is the las non-instantanious state
         idx_state_executed_in = -2
         # while the corresponding state is an instantanious transition state
-        while history[idx_state_executed_in][0] == "":
+        while (history[idx_state_executed_in][0] == ""):
             # go to the previous state
             idx_state_executed_in -= 1
 
         state_executed_in = history[idx_state_executed_in][1]
-
         action_executed = history[idx_state_executed_in + 1][0]
-
-        return state_executed_in().update(action_executed)
+        if state_executed_in.has_instant():
+            if isinstance(state_executed_in, HistoricalState):
+                return state_executed_in.instant(stack, history)
+            else:
+                return state_executed_in.instant(stack)
+        else:
+            if isinstance(state_executed_in, HistoricalStatej):
+                return state_executed_in.update(action_executed, history)
+            else:
+                return state_executed_in.update(action_executed)
 
 
 # TODO: class that shows the contents of the History

@@ -144,7 +144,10 @@ def main(stdscr):
             # if instantanious transition:
             # also apply all the following instantanious transitions
             while state.has_instant():
-                state = state.instant(stack)
+                if isinstance(state, HistoricalState):
+                    state = state.instant(stack, history)
+                else:
+                    state = state.instant(stack)
                 history.append(("", state))
 
     except (KeyboardInterrupt, EOFError):
