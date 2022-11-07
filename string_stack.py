@@ -17,6 +17,8 @@ class StringStack(list):
         """
         if len(self) != 0:
             return list.pop(self)
+        # return the bottom-of-pile symbol (empty string)
+        return ""
 
     def push(self, word: str) -> None:
         """Push a string onto the stack.
