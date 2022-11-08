@@ -1,29 +1,23 @@
+from stack import Stack
 
-class StringStack(list):
+class StringStack(Stack):
     """The string stack is like a normal stack, except it is never empty.
     It always contains at least the empty string."""
 
-    def head(self) -> str:
-        """Get the head of the stack"""
-        l = len(self)
-        if l == 0:
-            return ""
-        return l[l-1]
+    @property
+    def stack_contents_type(self):
+        return str
 
-    def pop(self) -> str:
-        """Pop the first string from the stack.
-        Returns:
-            str: The top element of the stack (it is removed from the stack). None if the stack is empty.
-        """
-        if len(self) != 0:
-            return list.pop(self)
-        # return the bottom-of-pile symbol (empty string)
+    @property
+    def bottom_of_pile_symbol(self):
         return ""
 
     def push(self, word: str) -> None:
         """Push a string onto the stack.
         The empty string is ignored.
         """
+        if not isinstance(word, str):
+            raise TypeError(f"Cannot push a non-string ({type(word)}) into a StringStack.")
         if word != "":
             self.append(word)
 
