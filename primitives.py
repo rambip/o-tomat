@@ -1,9 +1,13 @@
 from string_stack import StringStack
-from typing import Protocol
+from abc import ABC, abstractmethod
 
 
 State = 'State'  # so type hinting works
-class State:  # abstract class
+class State(ABC):
+    """State is an abstract class.
+    It is not meant to be actually instanciated, but to be inherited from.
+    """
+
     def __init__(self):
         self.check_instant_update_compat()
 
@@ -33,11 +37,13 @@ class State:  # abstract class
     def has_update(self) -> bool:
         return hasattr(self, 'update')
 
+    # @abstractmethod
     # def update(self, msg: str, stack: StringStack) -> State: ...
     """how to transition from the current state to any other, depending on
     the typed command.
     """
 
+    # @abstractmethod
     # def instant(self, stack: StringStack) -> State: ...
     """instantanious transition.
     By default, a state does not have an instantanious transition.
