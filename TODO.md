@@ -11,7 +11,11 @@
 
 # Development
  - FIXME and TODO policy
-     - The person that created the code is responsible for either modifying the code, or adding a commment to explain why there is nothing to modify.
+     - The person that created the code is responsible for either modifying the code, or adding a commment to explain why there is nothing to modify ?
+ - Define minimal python version (python 3.10 ? python 3.8 ?)
+     - are we allowed to use match, specific type hinting etc. ?
+
+
 
 # New ideas:
  - 2 stacks: one for numbers and one for strings
