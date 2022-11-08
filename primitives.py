@@ -47,21 +47,7 @@ class State:  # abstract class
     #     They will use this functionnality"""
     #     pass
 
-class HistoricalState(State):  # abstract class
-    """State that needs to know the history.
-    The `update` and `instant` methods have the mandatory `history` argument,
-    that is the history of the commands typed (hence, a list containing couples
-    of the command typed, and the State it went to).
-    """
 
-    # def update(self,
-    #            msg: str,
-    #            stack: StringStack,
-    #            history: list[str, State]) -> State:
-    #     pass
-
-    # def instant(self, stack: StringStack, history: list[str, State]) -> State:
-    #     pass
 
 # Default state. Also the initial one
 class MenuState(State):
@@ -97,30 +83,9 @@ class MenuState(State):
 - pop: {PopState.__doc__}
     """
 
-class RepeatLastActionState(HistoricalState):
-    def instant(self, stack: StringStack, history: list[str, State]) -> State:
-        if len(history) <= 1:
-            return MenuState()
-        # get the state the last command was executed in
-        # that is the las non-instantanious state
-        idx_state_executed_in = -2
-        # while the corresponding state is an instantanious transition state
-        while (history[idx_state_executed_in][0] == ""):
-            # go to the previous state
-            idx_state_executed_in -= 1
-
-        state_executed_in = history[idx_state_executed_in][1]
-        action_executed = history[idx_state_executed_in + 1][0]
-        if state_executed_in.has_instant():
-            if isinstance(state_executed_in, HistoricalState):
-                return state_executed_in.instant(stack, history)
-            else:
-                return state_executed_in.instant(stack)
-        else:
-            if isinstance(state_executed_in, HistoricalStatej):
-                return state_executed_in.update(action_executed, history)
-            else:
-                return state_executed_in.update(action_executed)
+# TODO: class that repeats the last action
+class RepeatLastActionState(State):
+    pass
 
 
 # TODO: class that shows the contents of the History

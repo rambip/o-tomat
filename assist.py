@@ -2,6 +2,7 @@ import curses
 import random
 from string_stack import StringStack
 from primitives import *
+import magic_values as magic
 import text  # text box functions
 
 MAX_STACK_HEIGHT = 10
@@ -126,7 +127,6 @@ def main(stdscr):
 
             # Transition
             # Based on a pushdown automaton
-            # TODO: gestion of HistoricalStates
             input_msg = get_input(stdscr)
             if input_msg == "":
                 _, state = last_transition_from(history, state)
@@ -144,10 +144,7 @@ def main(stdscr):
             # if instantanious transition:
             # also apply all the following instantanious transitions
             while state.has_instant():
-                if isinstance(state, HistoricalState):
-                    state = state.instant(stack, history)
-                else:
-                    state = state.instant(stack)
+                state = state.instant(stack)
                 history.append(("", state))
 
     except (KeyboardInterrupt, EOFError):
