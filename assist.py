@@ -54,14 +54,22 @@ def get_input(stdscr, until_quote=False) -> str:
             stdscr.addch(char)
 
 
-
 # FIXME: the argument shouldn't be stack_left, but stack_right ?
-def display(stdscr, state_name, state_box, stack_box, stack_left=True) -> None:
+def display(stdscr,
+            state_name: str, state_box: [str],
+            stack_box: [str], stack_left=True) -> None:
     """display the content on the screen
     Args:
-        - stack_left: indicate if we want to display the stack
-                                -> on the right of the state information
-                                -> below the state information
+        stdscr: The curses standard screen object to draw in.
+        state_name (str): The displayed name of the current state.
+        state_box (list[str]): The text box (list of lines) of the current state.
+        stack_box: [str]: The text box (list of lines) representing the stack and its contents.
+        stack_left (bool): indicate if we want to display the stack :
+                            -> on the right of the state information (True)
+                            -> below the state information (False)
+                           Please note that if the contents of the stack are
+                           tool wide to print, the stack will automatically be
+                           placed below.
     """
     state_box = text.wrap(state_box, MAX_INFO_WIDTH)  # wrap long lines
 

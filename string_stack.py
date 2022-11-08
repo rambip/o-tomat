@@ -1,5 +1,6 @@
 from stack import Stack
 
+
 class StringStack(Stack):
     """The string stack is like a normal stack, except it is never empty.
     It always contains at least the empty string."""
@@ -17,7 +18,8 @@ class StringStack(Stack):
         The empty string is ignored.
         """
         if not isinstance(word, str):
-            raise TypeError(f"Cannot push a non-string ({type(word)}) into a StringStack.")
+            raise TypeError(
+                f"Cannot push a non-string ({type(word)}) into a StringStack.")
         if word != "":
             self.append(word)
 

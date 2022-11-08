@@ -1,9 +1,12 @@
 from stack import Stack
 
-# TODO: implement what is metadata
+# TODO: implement what is a metadata item
+
+
 class MetaData:
     def __init__(self):
         pass
+
 
 class MetaStack(Stack):
     @property
@@ -16,7 +19,3 @@ class MetaStack(Stack):
 
     def render(self) -> [str]:
         # TODO: render or __str__
-
-
-
-

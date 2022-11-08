@@ -26,13 +26,14 @@ def wrap(txt: list[str], max_width: int) -> list[str]:
         list[str]: The text, but split into lines of length less or equal to
             `max_width`.
     """
-    res = []
+    wrapped = []  # result variable
     for line in txt:
         if len(line) < max_width:  # nothing to wrap
-            res.append(line)
+            wrapped.append(line)
         else:
+            # you want to create a new line for each chuck of size max_width
             # (1 + len(line) // max_width) is the number of lines you'll get
             # splitting the current one
             for i in range(1 + len(line) // max_width):
-                res.append(line[max_width*i:max_width*(i+1)])
-    return res
+                wrapped.append(line[max_width*i:max_width*(i+1)])
+    return wrapped

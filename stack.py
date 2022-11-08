@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod, abstractproperty
 
 StackValue = "StackValue"  # type hinting
 
+
 class Stack(list):
     """Abstract class representing a strictly typed stack.
     Any element added into the stack will be passed through type checking to
@@ -22,9 +23,9 @@ class Stack(list):
         return None
 
     def is_of_correct_type(self, value) -> bool:
-         """Check if value is of correct type for the stack.
-         """
-         return isinstance(value, self.stack_contents_type)
+        """Check if value is of correct type for the stack.
+        """
+        return isinstance(value, self.stack_contents_type)
 
     def head(self) -> StackValue:
         """Get the top of the stack."""
@@ -36,7 +37,8 @@ class Stack(list):
         """Put a value into the top of the stack."""
         # do not accept values of incorrect type
         if not self.is_of_correct_type(value):
-            raise TypeError(f"Type {type(value)} is not acceptable in this stack.")
+            raise TypeError(
+                f"Type {type(value)} is not acceptable in this stack.")
         self.append(value)
 
     def pop(self) -> StackValue:
@@ -46,7 +48,3 @@ class Stack(list):
             return self.bottom_of_pile_symbol
         # basic action : pop from the list
         return list.pop(self)
-
-
-
-

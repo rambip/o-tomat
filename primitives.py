@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 
 
 State = 'State'  # so type hinting works
+
+
 class State(ABC):
     """State is an abstract class.
     It is not meant to be actually instanciated, but to be inherited from.
@@ -53,7 +55,6 @@ class State(ABC):
     They will use this functionnality"""
 
 
-
 # Default state. Also the initial one
 class MenuState(State):
     def __init__(self, message: str = "Waiting for command"):
@@ -64,14 +65,13 @@ class MenuState(State):
             "push": PushState(), ":": PushState(),
             "pop": PopState(), "x": PopState(),
             "join": JoinState(), ",": JoinState(),
-            "repeat": RepeatLastActionState(),
         }
         self.message = message
 
     def update(self, msg: str, stack: StringStack) -> State:
         if msg == "exit":
             return
-        if msg in ["help", "?"]:
+        if msg in ("help", "?"):
             return MenuState(self.get_help_message())
         if msg in self.transitions:
             return self.transitions[msg]
@@ -89,6 +89,8 @@ class MenuState(State):
     """
 
 # TODO: class that repeats the last action
+
+
 class RepeatLastActionState(State):
     pass
 
