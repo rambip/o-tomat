@@ -1,0 +1,1 @@
+class MetaStack(list):
