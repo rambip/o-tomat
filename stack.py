@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod, abstractproperty
 StackValue = "StackValue"  # type hinting
 
 
-class Stack(list):
+class Stack(list, ABC):
     """Abstract class representing a strictly typed stack.
     Any element added into the stack will be passed through type checking to
     see if it matches the type.s contained in `stack_contents_type`.
