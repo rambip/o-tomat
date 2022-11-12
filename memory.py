@@ -1,37 +1,38 @@
 from string_stack import StringStack
-from metadata_stack import MetaStack
 from typing import NamedTuple
 
 State = 'State'  # for type hinting
 
-class HistoryEntry(NamedTuple):
+class HistoryItem(NamedTuple):
     command: str
     state: State
+    carry: str
+    # entire copy of the stack after having done the transition
+    stack_after: list[str]
 
 
 class Memory:
     """Main memory"""
-    def __init__(self):
+    def __init__(self, first_state, first_carry):
         # the main stack
         self.stack = StringStack()
 
         # argument to pass to the next state
-        self.carry : str = ""
+        self.carry : str = first_carry 
 
-        # message that the next state has to show
-        self.next_message : str = ""
+        # history
+        self.history = [HistoryItem("", first_state, first_carry, "")]
 
-        # metadata
-        self.meta = Meta()
+    def set_carry(self, c):
+        self.carry = c
 
+    def get_carry(self) -> str:
+        c = self.carry
+        # FIXME: bad idea ?
+        self.carry = ""
+        return c
 
-class Meta:
-    """Metadata"""
-    def __init__(self):
-        # list of states
-        State = 'State'  # for type hinting
-        self.history: list[HistoryEntry] = [HistoryEntry("", None)]
-
-
-
-
+    def history_add_item(self, command, state):
+        self.history.append(
+                HistoryItem(command, state, self.carry, self.stack.copy())
+        )
