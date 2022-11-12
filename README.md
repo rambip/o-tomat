@@ -12,7 +12,7 @@ By stacking your commands of course !
 ## Current look
 ![o-tomat screenshot 1](screenshots/1.png)
 
-## Design values
+## Our goals
 
 ### Interactivity
 Every word that you type have a consequence, like in real life:
