@@ -1,8 +1,6 @@
 from string_stack import StringStack
 from state import State
-from memory import Memory
-
-from meta import *
+from memory import Memory, HistoryItem
 
 
 # Default state. Also the initial one

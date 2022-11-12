@@ -2,7 +2,6 @@ import curses
 import random
 from string_stack import StringStack
 from primitives import *
-from meta import *
 from memory import Memory
 import magic_values as magic
 import text  # text box functions

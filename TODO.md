@@ -3,6 +3,7 @@
 
 # interface
  - error when reaching the end of the window
+ - when wrapping text, limit to the size of the window
 
 # tools
  - files tools: copy, move, delete ...
