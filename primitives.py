@@ -81,7 +81,7 @@ class MenuState(State):
         return {
             "push": PushState(), ":": PushState(),
             "pop": PopState(), "x": PopState(),
-            "join": JoinState(), ",": JoinState(),
+            "join": PopJoinState(), ",": PopJoinState(),
             "history": ShowHistoryState(),
         }
 
@@ -166,28 +166,22 @@ class PopState(State):
         ]
 
 
-class JoinState(State):
+class PopJoinState(State):
     """Join the two top values of the stack.
     This "natural" join puts the top of the stack after the second value of the
     satck, since that is visually just like removing the newline separation
     between both.
     """
-
     def instant(self, stack_top: str, mem: Memory) -> State:
-        mem.stack.push(stack_top + mem.stack.pop())
-        return MenuState()
+        val = mem.stack.pop()
+        mem.carry = val
+        return JoinState()
 
-
-class ReverseJoinState(State):
-    """Join the two top values of the stack, but reversed.
-    Contratly the the "natural" join (`JoinState`), this join pust the top of the stack before the second value of the stack.
-    That results in a "reversed" version of the stack.
+class JoinState(State):
+    """Join the top of the stack with the carry
     """
 
     def instant(self, stack_top: str, mem: Memory) -> State:
-        mem.stack.push(mem.stack.pop() + stack_top)
+        mem.stack.pop()
+        mem.stack.push(stack_top + mem.carry)
         return MenuState()
-
-
-
-
