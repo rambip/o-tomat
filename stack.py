@@ -20,7 +20,6 @@ class Stack(list, ABC):
     @abstractproperty
     def bottom_of_pile_symbol(self):
         """Symbol returned when the stack is empty"""
-        return None
 
     def is_of_correct_type(self, value) -> bool:
         """Check if value is of correct type for the stack.
@@ -31,7 +30,7 @@ class Stack(list, ABC):
         """Get the top of the stack."""
         if len(self) == 0:
             return self.bottom_of_pile_symbol
-        return l[-1]  # return last element -> top of the stack
+        return self[-1]  # return last element -> top of the stack
 
     def push(self, value: StackValue) -> None:
         """Put a value into the top of the stack."""
@@ -48,3 +47,6 @@ class Stack(list, ABC):
             return self.bottom_of_pile_symbol
         # basic action : pop from the list
         return list.pop(self)
+
+    def empty(self) -> bool:
+        return len(self) == 0

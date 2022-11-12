@@ -1,8 +1,11 @@
 from string_stack import StringStack
 from abc import ABC, abstractmethod
+from memory import Memory
 
 
-State = 'State'  # so type hinting works
+# so type hinting works
+State = 'State'
+History = 'History'
 
 
 class State(ABC):
@@ -11,7 +14,12 @@ class State(ABC):
     """
 
     def __init__(self):
+        if hasattr(self, "pre_init"):
+            self.pre_init()
         self.check_instant_update_compat()
+
+    def pre_init(self) -> None:
+        """Method called before the __init__ method is executed."""
 
     def __repr__(self) -> str:
         """Show the name of the state itself."""
@@ -40,13 +48,13 @@ class State(ABC):
         return hasattr(self, 'update')
 
     # @abstractmethod
-    # def update(self, msg: str, stack: StringStack) -> State: ...
+    # def update(self, msg: str, stack_head: str, mem: Memory) -> State: ...
     """how to transition from the current state to any other, depending on
     the typed command.
     """
 
     # @abstractmethod
-    # def instant(self, stack: StringStack) -> State: ...
+    # def instant(self, stack_head: str, mem: Memory) -> State: ...
     """instantanious transition.
     By default, a state does not have an instantanious transition.
     A state must implement update or instant, BUT NOT BOTH !
@@ -56,32 +64,45 @@ class State(ABC):
 
 
 # Default state. Also the initial one
+MenuState = 'MenuState'  # for type hinting
 class MenuState(State):
-    def __init__(self, message: str = "Waiting for command"):
-        super(MenuState, self).__init__()  # call parent class' constructor
-        # has to be defined inside the constructor, because the reference to
-        # the class itself (MenuState) will be impossible else
-        self.transitions = {
+
+    def with_message(self, message: str) -> MenuState:
+        """Change the message the menu will show."""
+        self.message_box = str(message).split('\n')
+        return self
+
+    def with_message_box(self, message_box: str) -> MenuState:
+        self.message_box = list(message_box)
+        return self
+
+    @property
+    def transitions(self):
+        return {
             "push": PushState(), ":": PushState(),
             "pop": PopState(), "x": PopState(),
             "join": JoinState(), ",": JoinState(),
+            "history": ShowHistoryState(),
         }
-        self.message = message
 
-    def update(self, msg: str, stack: StringStack) -> State:
+    def update(self, msg: str, stack_top: str, mem: Memory) -> State:
+        self.mem = mem
         if msg == "exit":
             return
         if msg in ("help", "?"):
-            return MenuState(self.get_help_message())
+            return MenuState().with_message(self.HELP_MESSAGE)
         if msg in self.transitions:
             return self.transitions[msg]
-        return MenuState("unknown command")
+        return MenuState().with_message("unknown command")
 
     def render(self) -> list[str]:
-        return self.message.split('\n')
+        if hasattr(self, 'message_box'):
+            return self.message_box
+        # default mesage
+        return ["Waiting for command"]
 
-    # FIXME: define as a constant ?
-    def get_help_message(self) -> str:
+    @property
+    def HELP_MESSAGE(self) -> str:
         return f"""- help: display this message",
 - exit: exit",
 - push: {PushState.__doc__}
@@ -89,21 +110,39 @@ class MenuState(State):
     """
 
 # TODO: class that repeats the last action
-
-
 class RepeatLastActionState(State):
-    pass
+    def instant(self, stack_top: str, mem: Memory) -> State:
+        return self.last_action_state(mem)
+
+    def last_action_state(self, mem: Memory) -> State:
+        history = mem.meta.history
+        current_state = history[-1].state
+        for i in reversed(range(len(history) - 1)):
+            if history[i].state == current_state:
+                return history[i+1].state
+        return MenuState().with_message("there is no last command to repeat")
+
 
 
 # TODO: class that shows the contents of the History
-# class ShowHistoryState(State):
-#     def update(self, msg: str, stack: String, history: list[str, str]) -> State:
+class ShowHistoryState(State):
+    def instant(self, stack_top: str, mem: Memory) -> State:
+        return MenuState().with_message_box(self.render_history(mem.meta.history))
+
+    def render_history(self, history: History) -> [str]:
+        res = list()
+        for entry in history:
+            res.append(entry.command + " -> " + repr(entry.state))
+        return res
+
+
+
 
 class PushState(State):
     """Push string to the stack."""
 
-    def update(self, msg: str, stack: StringStack) -> State:
-        stack.push(msg)
+    def update(self, msg: str, stack_top: str, mem: Memory) -> State:
+        mem.stack.push(msg)
 
         return MenuState()
 
@@ -116,9 +155,9 @@ class PushState(State):
 class PopState(State):
     """Pop string from the stack."""
 
-    def instant(self, stack: StringStack) -> State:
+    def instant(self, stack_top: str, mem: Memory) -> State:
         # instantanious transition
-        stack.pop()
+        mem.stack.pop()
         return MenuState()
 
     def render(self) -> list[str]:
@@ -134,9 +173,8 @@ class JoinState(State):
     between both.
     """
 
-    def instant(self, stack: StringStack) -> State:
-        top, snd = stack.pop(), stack.pop()
-        stack.push(snd + top)
+    def instant(self, stack_top: str, mem: Memory) -> State:
+        mem.stack.push(stack_top + mem.stack.pop())
         return MenuState()
 
 
@@ -146,7 +184,10 @@ class ReverseJoinState(State):
     That results in a "reversed" version of the stack.
     """
 
-    def instant(self, stack: StringStack) -> State:
-        top, snd = stack.pop(), stack.pop()
-        stack.push(top + snd)
+    def instant(self, stack_top: str, mem: Memory) -> State:
+        mem.stack.push(mem.stack.pop() + stack_top)
         return MenuState()
+
+
+
+

@@ -19,3 +19,8 @@ class MetaStack(Stack):
 
     def render(self) -> [str]:
         # TODO: render or __str__
+        pass
+
+
+
+

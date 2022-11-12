@@ -2,6 +2,7 @@ import curses
 import random
 from string_stack import StringStack
 from primitives import *
+from memory import Memory, HistoryEntry
 import magic_values as magic
 import text  # text box functions
 
@@ -100,16 +101,12 @@ def display(stdscr,
     stdscr.refresh()
 
 
-def last_transition_from(history, state) -> (str, State):
-    for i in reversed(range(len(history)-1)):
-        if history[i][1] == state:
-            return history[i+1]
-    return ("", MenuState("there is no last command to repeat"))
-
 
 def main(stdscr):
-    state = MenuState(INTRO_MESSAGE)
-    stack = StringStack()
+    state = MenuState().with_message(INTRO_MESSAGE)
+    mem = Memory()
+    # TODO: remove the stack
+    # stack = StringStack()
 
     # history of all the (word, state) transitions
     # word is "" if in is an instantanious transition
@@ -120,7 +117,7 @@ def main(stdscr):
             stdscr.clear()
 
             state_box = state.render()
-            stack_box = stack.render()
+            stack_box = mem.stack.render()
 
             # number of columns between the left of the state information and the right of the screen
             space_for_stack = stdscr.getmaxyx()[1] - MAX_INFO_WIDTH
@@ -137,11 +134,13 @@ def main(stdscr):
             # Based on a pushdown automaton
             input_msg = get_input(stdscr)
             if input_msg == "":
-                _, state = last_transition_from(history, state)
+                # _, state = last_transition_from(history, state)
+                state = RepeatLastActionState().instant(mem.stack.head(), mem)
+                mem.meta.history.append(HistoryEntry("repeat",
+                                                     RepeatLastActionState().last_action_state(mem)))
             else:
-                state = state.update(input_msg, stack)
-
-            history.append((input_msg, state))
+                state = state.update(input_msg, mem.stack.head(), mem)
+                mem.meta.history.append(HistoryEntry(input_msg, state))
 
             # Exit if no transition
             # should be before any test on `state`, because else `sate` could
@@ -152,8 +151,9 @@ def main(stdscr):
             # if instantanious transition:
             # also apply all the following instantanious transitions
             while state.has_instant():
-                state = state.instant(stack)
+                state = state.instant(mem.stack.head(), mem)
                 history.append(("", state))
+                mem.meta.history.append(HistoryEntry("", state))
 
     except (KeyboardInterrupt, EOFError):
         exit()
