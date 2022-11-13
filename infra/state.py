@@ -12,8 +12,16 @@ class State(ABC):
     It is not meant to be actually instanciated, but to be inherited from.
     """
 
-    def __init__(self):
+    def __init__(self, init_string=""):
         self.check_instant_update_compat()
+        self.init(init_string)
+
+    def init(self, init_string):
+        """
+        init the class with a "carry" string.
+        Is meant to be overriden
+        """
+        pass
 
     def __str__(self) -> str:
         """Show the name of the state itself."""

@@ -94,9 +94,9 @@ def display(stdscr,
 
 
 class Automat:
-    def __init__(self, init_state, init_stack=StringStack(), init_msg = "EntryPoint"):
+    def __init__(self, init_state, init_stack=StringStack()):
         self.state = init_state
-        self.mem = Memory(init_state, init_msg)
+        self.mem = Memory(init_state)
         self.stack = init_stack
 
     def check(self):

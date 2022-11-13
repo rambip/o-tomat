@@ -11,8 +11,5 @@ Type help for help
 Hit space to repeat last command
 """
 
-A = Automat(
-        init_state = MenuState(),
-        init_msg = INTRO_MESSAGE
-        )
+A = Automat(init_state=MenuState(INTRO_MESSAGE))
 A.start()

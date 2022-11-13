@@ -16,22 +16,20 @@ class MenuState(State):
             "dir": DirState(),
         }
 
+    def init(self, init_msg="unknown comand"):
+        self.info = init_msg.split('\n')
+
     def update(self, msg: str, stack_top: str, mem: Memory) -> State:
         if msg == "exit":
             return
         if msg in ("help", "?"):
-            mem.set_carry(self.HELP_MESSAGE)
-            return MenuState()
+            return MenuState(self.HELP_MESSAGE)
         if msg in self.transitions:
             return self.transitions[msg]
-        mem.set_carry("unknown command")
         return MenuState()
 
     def render(self, mem) -> list[str]:
-        c = mem.get_carry()
-        if c == "":
-            return ["wating for command"]
-        return c.split('\n')
+        return self.info
 
     @property
     def HELP_MESSAGE(self) -> str:
@@ -78,27 +76,25 @@ class PopJoinState(State):
     """
     def instant(self, stack_top: str, mem: Memory) -> State:
         val = mem.stack.pop()
-        mem.set_carry(val)
-        return JoinState()
+        return JoinState(val)
 
 class JoinState(State):
     """Join the top of the stack with the carry
     """
+    def init(self, concat_right):
+        self.concat_right = concat_right
 
     def instant(self, stack_top: str, mem: Memory) -> State:
         mem.stack.pop()
-        mem.stack.push(stack_top + mem.get_carry())
+        mem.stack.push(stack_top + self.concat_right)
         return MenuState()
 
-
-# TODO: move to meta.py ?
-# need a way to avoid circular import
 
 
 class ShowHistoryState(State):
     def instant(self, stack_top: str, mem: Memory) -> State:
-        mem.set_carry("\n".join(self.render_history(mem.history)))
-        return MenuState()
+        info = "\n".join(self.render_history(mem.history))
+        return MenuState(info)
 
     def render_history(self, history: list[HistoryItem]) -> [str]:
         res = list()
