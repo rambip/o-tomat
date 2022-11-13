@@ -15,6 +15,7 @@
  - Define minimal python version (python 3.10 ? python 3.8 ?)
      - are we allowed to use match, specific type hinting etc. ?
 
+- split code into 2 repos: python module and specific automat ?
 
 
 # New ideas:

@@ -1,6 +1,6 @@
-from string_stack import StringStack
-from state import State
-from memory import Memory, HistoryItem
+from infra import State
+from infra.memory import Memory, HistoryItem
+from file_states import DirState
 
 
 # Default state. Also the initial one
@@ -13,6 +13,7 @@ class MenuState(State):
             "pop": PopState(), "x": PopState(),
             "join": PopJoinState(), ",": PopJoinState(),
             "history": ShowHistoryState(),
+            "dir": DirState(),
         }
 
     def update(self, msg: str, stack_top: str, mem: Memory) -> State:
@@ -92,19 +93,6 @@ class JoinState(State):
 
 # TODO: move to meta.py ?
 # need a way to avoid circular import
-
-class RepeatLastActionState(State):
-    def instant(self, stack_top: str, mem: Memory) -> State:
-        return self.last_action_state(mem)
-
-    def last_action_state(self, mem: Memory) -> State:
-        history = mem.history
-        current_state = history[-2].state
-        for i in reversed(range(len(history) - 2)):
-            if history[i].state == current_state:
-                return history[i+1].state
-        mem.set_carry("there is no last command to repeat")
-        return MenuState()
 
 
 class ShowHistoryState(State):
