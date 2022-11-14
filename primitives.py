@@ -1,6 +1,7 @@
 from infra import State
 from infra.memory import Memory, HistoryItem
 from file_states import DirState
+import os
 
 
 # Default state. Also the initial one
@@ -13,7 +14,7 @@ class MenuState(State):
             "pop": PopState(), "x": PopState(),
             "join": PopJoinState(), ",": PopJoinState(),
             "history": ShowHistoryState(),
-            "dir": DirState(),
+            "dir": DirState(os.getenv("PWD")),
         }
 
     def init(self, init_msg="unknown comand"):

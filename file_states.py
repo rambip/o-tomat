@@ -5,39 +5,37 @@ from infra import State, Memory
 import primitives
 
 class DirState(State):
+    def init(self, path):
+        self.path = path
+
     def update(self, msg, stack_top, mem):
         MenuState = primitives.MenuState
 
         if msg == ".":
-            pwd = mem.os.getenv("PWD")
             sep = mem.os.path.sep
-            if pwd != sep:
-                up = sep.join(pwd.split(sep)[:-1])
-                assert(up!='')
-                mem.setenv("PWD", up)
-                return DirState()
-            return DirState()
+            if self.path != sep:
+                up = sep.join(self.path.split(sep)[:-1])
+                return DirState(up)
+            return self
 
         try:
             i = int(msg)
-            pwd = mem.getenv("PWD")
-            files = mem.os.listdir(pwd)
+            files = mem.os.listdir(self.path)
             if i < len(files):
-                path = mem.os.path.join(pwd, files[i]) 
-                if mem.os.path.isdir(path):
-                    mem.setenv("PWD", path)
-                    return DirState()
+                f = mem.os.path.join(self.path, files[i]) 
+                if mem.os.path.isdir(f):
+                    return DirState(f)
                 mem.stack.push(files[i])
-                return DirState()
-            self.mem.set_carry("invalid number")
-            return MenuState()
+
+                return self
+            return MenuState("invalid number")
 
         except ValueError:
-            return MenuState()
+            return MenuState("not a number")
 
 
     def render(self, mem):
-        files = mem.os.listdir(mem.getenv("PWD"))
+        files = mem.os.listdir(self.path)
         # FIXME: when too many files
         lines = [f"{i} --> {f}" for i, f in enumerate(files)]
         helpmsg = [
