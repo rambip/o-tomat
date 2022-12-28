@@ -11,6 +11,5 @@ class RepeatLastActionState(State):
         for i in reversed(range(len(history) - 2)):
             if history[i].state == current_state:
                 return history[i+1].state
-        mem.set_carry("there is no last command to repeat")
         return MenuState()
 
